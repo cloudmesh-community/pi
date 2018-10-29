@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Tmux cluster ssh implementation
+# usage:
+# tmux-cssh <num-columns> <ssh-userid> <hostlist>
+# Examples:
+#   tmux-cssh 2 pi 10.0.0.[101-105]
 
 TMUX_COLS=$1
 TMUX_SSH_USERID=$2
