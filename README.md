@@ -1,3 +1,35 @@
-# Raspberry PI setup
+# Raspberry Pi setup
 
-Raspberry PI setup scripts to complement the manual
+Raspberry Pi setup scripts to complement the manual
+
+## Setting up the Raspberry Pi
+
+The Raspberry Pi runs a Linux operating system based on the Debian distribution
+that is called Raspbian. Some users may not be too familiar with administering a
+Linux system so we have developed various scripts that can help you setup and
+work with your Raspberry Pi system.
+
+To use these scripts there are a few manual steps that must be taken. First, if
+you have installed the Raspbian Stretch Lite distribution (which we recommend)
+then your Pi will have very few development tools and utilities installed. In
+order to run many of these scripts you will need to first install some tools.
+The first tool you will need is `git`. `git` is a tool to access data on a
+version control system and it can be used to download the latest version of
+these scripts. After booting your Raspberry Pi and connecting to it either with
+a keyboard and monitor or over ssh, you will need to update the packages and
+install git. Please run the following commands (NOTE: your Pi will need to be
+connected to the internet for these commands to work properly):
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get install -y git
+```
+
+When this is complete you can then checkout (get a copy of) the latest version
+of these tools on your Raspberry Pi with the command:
+
+```bash
+$ git clone https://github.com/cloudmesh-community/pi.git
+```
+
+This will create a directory called `pi` in the current folder.
