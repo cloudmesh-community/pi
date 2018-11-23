@@ -41,7 +41,7 @@ fi
 if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
   printf >&2 "Missing dependencies:\\n"
   printf >&2 "    %s\\n" "${MISSING_DEPS[@]}"
-  printf >&2 "You can install them using the command:\\n$0 -i\\nAborting.\\n"
+  printf >&2 "You can install them using the command:\\n%s -i\\nAborting.\\n" "$0"
   exit 1
 fi
 
