@@ -45,7 +45,12 @@ done
 if [ ! -z $INSTALL_DEPS ]; then
   if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
     apt-get install -y "${MISSING_DEPS[@]}"
-    echo Dependencies installed. Please run the script again without the -i option.
+    APT_RETVAL=$?
+    if [ $APT_RETVAL -eq 0 ]; then
+      echo Dependencies installed. Please run the script again without the -i option.
+    else
+      echo Dependencies failed installation. Please see the output. May need to run the script using sudo.
+    fi
   else
     echo No missing dependencies detected. Please run the script again without the -i option.
   fi
@@ -55,7 +60,9 @@ fi
 if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
   printf >&2 "Missing dependencies:\\n"
   printf >&2 "    %s\\n" "${MISSING_DEPS[@]}"
-  printf >&2 "You can install them using the command:\\n%s -i\\nAborting.\\n" "$0"
+  printf >&2 "You can install them using the command:\\n"
+  printf >&2 "sudo %s/%s -i\\n" "$(dirname "$0")" "$0"
+  printf >&2 "Aborting.\\n"
   exit 1
 fi
 
@@ -76,8 +83,13 @@ echo "$TMUX_HOSTS"
 TMUX_SESSION="tmux-cssh"
 
 tmux new-session -s $TMUX_SESSION -d
-# tmux new-window -t $TMUX_SESSION
-# tmux send-keys -t $TMUX_SESSION 'ls -lh' C-m
+TMUX_RETVAL=$?
+
+if [ $TMUX_RETVAL -ne 0 ]; then
+  echo Error: tmux returned failure.
+  echo If tmux returns a failure of invalid LC_ALL, LC_CTYPE or LANG please setup a valid UTF-8 locale \(such as en_US.utf8\) by running raspi-config or the provided enable-locale.sh script and trying again.
+  exit 1
+fi
 
 col=0
 first=1
