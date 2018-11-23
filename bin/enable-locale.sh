@@ -16,6 +16,12 @@ fi
 
 # perl -pi -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 perl -pi -e "s/#\\s*$NEW_LOCALE\\s*$NEW_ENCODING/$NEW_LOCALE $NEW_ENCODING/g" /etc/locale.gen
+PERL_RETVAL=$?
+if [ $PERL_RETVAL -ne 0 ]; then
+  printf >&2 "Error: this script requires root privileges. Please try again with sudo:"
+  printf >&2 "sudo %s/%s" "$(dirname "$0")" "$0"
+  exit 1
+fi
 local-gen "$NEW_LOCALE"
 update-locale "$NEW_LOCALE"
 
