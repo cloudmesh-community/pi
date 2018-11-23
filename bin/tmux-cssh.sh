@@ -130,6 +130,7 @@ for HOST in $TMUX_HOSTS ; do
   ((col++))
 done
 
+tmux send-keys -t $TMUX_SESSION "echo default leader for tmux is Ctrl-B" C-m
 tmux send-keys -t $TMUX_SESSION "echo leader : setw synchronize-panes to toggle synchronization" C-m
 tmux setw synchronize-panes
 tmux attach -t $TMUX_SESSION
