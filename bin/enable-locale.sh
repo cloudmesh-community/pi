@@ -5,7 +5,7 @@
 # Examples:
 #   sudo enable-locale.sh en_US.UTF-8 UTF-8
 
-usage() { printf >&2 "Usage: %s <locale> <encoding>\\n%s en_US.UTF-8 UTF-8\\n" "$0" "$0"; exit 1; }
+usage() { printf >&2 "Usage: sudo %s <locale> <encoding>\\nsudo %s en_US.UTF-8 UTF-8\\n" "$0" "$0"; exit 1; }
 
 NEW_LOCALE=$1
 NEW_ENCODING=$2
