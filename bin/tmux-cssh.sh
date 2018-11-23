@@ -44,7 +44,7 @@ done
 # all dependencies so please update this if that is the case!
 if [ ! -z $INSTALL_DEPS ]; then
   if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
-    echo apt-get install -y "${MISSING_DEPS[@]}"
+    apt-get install -y "${MISSING_DEPS[@]}"
     echo Dependencies installed. Please run the script again without the -i option.
   else
     echo No missing dependencies detected. Please run the script again without the -i option.
