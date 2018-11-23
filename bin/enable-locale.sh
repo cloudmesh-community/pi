@@ -14,6 +14,8 @@ if [ -z "$NEW_LOCALE" ] || [ -z "$NEW_ENCODING" ]; then
     usage
 fi
 
+# If /etc/locale.gen exists and we can't write to it OR
+# if we don't have write permissions on the parent directory
 if [[ -e /etc/locale.gen && ! -w /etc/locale.gen ]] || [ ! -w /etc ]; then
   echo "This script must be run with root privileges to update /etc/locale.gen." >&2
   printf >&2 "sudo %s %s %s\\n" "$(realpath --relative-to="$(pwd)" "$0")" "$NEW_LOCALE" "$NEW_ENCODING"
