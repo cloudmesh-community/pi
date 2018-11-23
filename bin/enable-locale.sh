@@ -16,7 +16,7 @@ fi
 
 if [[ -e /etc/locale.gen && ! -w /etc/locale.gen ]] || [ ! -w /etc ]; then
   echo "This script must be run with root privileges to update /etc/locale.gen." >&2
-  printf >&2 "sudo %s\\n" "$(realpath --relative-to="$(pwd)" "$0")"
+  printf >&2 "sudo %s %s %s\\n" "$(realpath --relative-to="$(pwd)" "$0")" "$NEW_LOCALE" "$NEW_ENCODING"
   exit 1
 fi
 
