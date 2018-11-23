@@ -32,4 +32,19 @@ of these tools on your Raspberry Pi with the command:
 $ git clone https://github.com/cloudmesh-community/pi.git
 ```
 
-This will create a directory called `pi` in the current folder.
+This will create a directory called `pi` in the current folder. We recommend
+adding the `bin` directory to your path for convenience in using the scripts
+found there. This can be accomplished by running the following lines:
+
+```bash
+$ echo 'if [ -d "$HOME/pi/bin" ] ; then' >> ~/.profile
+$ echo '    PATH="$HOME/pi/bin:$PATH"' >> ~/.profile
+$ echo 'fi' >> ~/.profile
+```
+
+This will affect any future login shells. The changes can be made in the current
+shell by sourcing `.profile`:
+
+```bash
+$ source ~/.profile
+```
