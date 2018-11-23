@@ -31,7 +31,12 @@ shift $((OPTIND-1))
 if [ ! -z $INSTALL_DEPS ]; then
   if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
     echo apt-get install -y "${MISSING_DEPS[@]}"
-    echo Dependencies installed. Please run the script again without the -i option.
+    APT_RETVAL=$?
+    if [ $APT_RETVAL -eq 0 ]; then
+      echo Dependencies installed. Please run the script again without the -i option.
+    else
+      echo Dependencies failed installation. Please see the output. May need to run the script using sudo.
+    fi
   else
     echo No missing dependencies detected. Please run the script again without the -i option.
   fi
