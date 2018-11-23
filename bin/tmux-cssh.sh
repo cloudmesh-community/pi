@@ -10,10 +10,13 @@ TMUX_SSH_USERID=
 
 usage() { echo "Usage: $0 [-c <num-cols>] [-u <userid>] 10.0.0.[101-105]" 1>&2; exit 1; }
 
-while getopts ":c:u:" o; do
+while getopts ":c:u:i" o; do
     case "${o}" in
         c)
             TMUX_COLS=${OPTARG}
+            ;;
+        i)
+            INSTALL_DEPS=1
             ;;
         u)
             TMUX_SSH_USERID=${OPTARG}
@@ -24,6 +27,37 @@ while getopts ":c:u:" o; do
     esac
 done
 shift $((OPTIND-1))
+
+# Check for missing dependencies
+
+DEPENDENCIES=(tmux)
+
+# Check for dependencies and abort if not installed
+MISSING_DEPS=()
+for dep in "${DEPENDENCIES[@]}"; do
+  command -v "$dep" >/dev/null 2>&1 || {
+    MISSING_DEPS+=("$dep")
+  }
+done
+
+# Install missing dependencies using apt-get. This may not be appropriate for
+# all dependencies so please update this if that is the case!
+if [ ! -z $INSTALL_DEPS ]; then
+  if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
+    echo apt-get install -y "${MISSING_DEPS[@]}"
+    echo Dependencies installed. Please run the script again without the -i option.
+  else
+    echo No missing dependencies detected. Please run the script again without the -i option.
+  fi
+  exit 0
+fi
+
+if [ ${#MISSING_DEPS[@]} -ne 0 ]; then
+  printf >&2 "Missing dependencies:\\n"
+  printf >&2 "    %s\\n" "${MISSING_DEPS[@]}"
+  printf >&2 "You can install them using the command:\\n%s -i\\nAborting.\\n" "$0"
+  exit 1
+fi
 
 HOSTS="$@"
 
@@ -64,21 +98,21 @@ for HOST in $TMUX_HOSTS ; do
     first=0
     # echo Create the new window
     # echo $col "$HOST"
-    do_ssh $TMUX_SSH_USERID $HOST
+    do_ssh "$TMUX_SSH_USERID" "$HOST"
   else
     if [ "$col" -lt "$TMUX_COLS" ]
     then
       # echo Split the horizontal
       # echo $col "$HOST"
       tmux split-window -h -t $TMUX_SESSION
-      do_ssh $TMUX_SSH_USERID $HOST
+      do_ssh "$TMUX_SSH_USERID" "$HOST"
     else
       # echo Split the vertical
       col=0
       # echo $col "$HOST"
       tmux select-pane -t 1.1
       tmux split-window -vf -t $TMUX_SESSION
-      do_ssh $TMUX_SSH_USERID $HOST
+      do_ssh "$TMUX_SSH_USERID" "$HOST"
     fi
   fi
   ((col++))
