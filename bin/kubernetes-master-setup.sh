@@ -75,10 +75,10 @@ JOIN_CA_HASH=${JOIN_PARTS[6]}
 cat << EOF > kubeadm-settings.yml
 ---
 kubeadm:
-  join-cmd: \""$JOIN_CMD"\"
-  ip: "$JOIN_IP"
-  token: "$JOIN_TOKEN"
-  ca-hash: "$JOIN_CA_HASH"
+  join-cmd: "$JOIN_CMD"
+  ip: $JOIN_IP
+  token: $JOIN_TOKEN
+  ca-hash: $JOIN_CA_HASH
 EOF
 
 mkdir -p "$HOME/.kube"
