@@ -13,7 +13,7 @@ curl -sSL get.docker.com \
 # Disable Swap
 dphys-swapfile swapoff \
   && dphys-swapfile uninstall -qy \
-  && update-rc.d dphys-swapfile -qy remove
+  && update-rc.d dphys-swapfile remove
 echo Adding " cgroup_enable=cpuset cgroup_enable=1 cgroup_enable=memory" to /boot/cmdline.txt
 cp /boot/cmdline.txt /boot/cmdline_backup.txt
 
