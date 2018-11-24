@@ -45,12 +45,6 @@ fi
 EOF
 ```
 
-```bash
-$ echo 'if [ -d "$HOME/pi/bin" ] ; then' >> ~/.profile
-$ echo '    PATH="$HOME/pi/bin:$PATH"' >> ~/.profile
-$ echo 'fi' >> ~/.profile
-```
-
 This will affect any future login shells. The changes can be made in the current
 shell by sourcing `.profile`:
 
