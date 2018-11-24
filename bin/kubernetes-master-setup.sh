@@ -41,11 +41,8 @@ fi
 
 if [ -z $APISERVER_IP ]; then
   echo No valid IP found. Please run again with -a option to set --apiserver-advertise-address
+  exit 1
 fi
-
-echo ip address $APISERVER_IP
-
-exit 0
 
 # Pre-pull the images to make the init command go faster
 kubeadm config images pull
@@ -58,14 +55,13 @@ modprobe ip_vs_rr
 modprobe ip_vs_wrr
 modprobe nf_conntrack_ipv4
 
-kubeadm init --token-ttl=0  --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=<internal master ip>
+kubeadm init --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP"
 
 # kubeadm join --token <token> --discovery-token-ca-cert-hash <ca hash>
 
-mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p "$HOME/.kube"
+cp -i /etc/kubernetes/admin.conf "$HOME/.kube/config"
+chown "$(id -u)":"$(id -g)" "$HOME/.kube/config"
 
 
-kubectl apply -f \
-   "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
