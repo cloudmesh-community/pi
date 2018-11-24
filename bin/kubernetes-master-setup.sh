@@ -54,15 +54,6 @@ fi
 echo "Pulling config images. This may take a while..."
 kubeadm config images pull
 
-# Fix a warning message in kubeadm init
-modprobe ip_vs
-modprobe ip_vs_sh
-# This is failing, maybe it was a typo?
-# modprobe ip_vs_vs
-modprobe ip_vs_rr
-modprobe ip_vs_wrr
-modprobe nf_conntrack_ipv4
-
 # Temporarily ignore SystemVerification errors: specifically the Docker version
 # check unnecessarily complains about 18.09.
 kubeadm init --ignore-preflight-errors=SystemVerification --token-ttl=0 --pod-network-cidr="$POD_CIDR" --apiserver-advertise-address="$APISERVER_IP" 2>&1 | tee kubeadm-init.txt

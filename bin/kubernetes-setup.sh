@@ -39,9 +39,8 @@ apt-get update
 # apt-get install -qy docker-ce=18.06.1~ce~3-0~raspbian kubeadm
 
 # TEMP use original docker install
-#sudo apt-get install -qy docker-ce=18.03.1~ce-0~raspbian 
-sudo apt-get install -qy kubeadm
-
+# apt-get install -qy docker-ce=18.03.1~ce-0~raspbian 
+apt-get install -qy kubeadm
 
 # Disable Swap
 dphys-swapfile swapoff && \
@@ -52,6 +51,15 @@ cp /boot/cmdline.txt /boot/cmdline_backup.txt
 
 orig="$(head -n1 /boot/cmdline.txt) cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
 echo "$orig" | tee /boot/cmdline.txt
+
+# Enable the following modules to avoid warnings
+cat << EOF >> /etc/modules
+ip_vs
+ip_vs_sh
+ip_vs_rr
+ip_vs_wrr
+nf_conntrack_ipv4
+EOF
 
 echo "You must now reboot. This can be done with the command:"
 echo "sudo reboot"
