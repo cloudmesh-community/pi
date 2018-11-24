@@ -4,6 +4,15 @@
 # tmux-cssh.sh -c <num-columns> -u <ssh-userid> <hostlist>
 # Examples:
 #   tmux-cssh.sh -c 2 -u pi 10.0.0.[101-105]
+#   tmux-cssh.sh -c 2 -u pi 10.0.0.[101-102] blue0[1-3] blue[20-25]
+
+# NOTE in bash v3 (current on OS X) leading zeros are squashed in brace
+# expansion so that
+# tmux-cssh.sh blue[08-11]
+# uses hosts "blue8 blue9 blue10 blue11"
+# Current workaround is to specify the ones with leading zeros separately
+# tmux-cssh.sh blue0[8-9] blue[10-11]
+# will uses hosts "blue08 blue09 blue10 blue11"
 
 TMUX_COLS=2
 TMUX_SSH_USERID=
@@ -75,10 +84,10 @@ fi
 # HOST="10.0.0.[101-105]"
 # HOST="10.0.0.[101-102,103,105-108]"
 HOSTS_BRE=$(echo "$HOSTS" | sed -E 's/\[([[:digit:]]+)-([[:digit:]]+)\]/{\1..\2}/g' |sed -E 's/([[:digit:]]+)-([[:digit:]]+)/{\1..\2}/g' | sed -E 's/\[([^]]+)\]/{\1}/')
+# echo "HOSTS_BRE: $HOSTS_BRE"
 
 TMUX_HOSTS=$(eval echo "$HOSTS_BRE")
-
-echo "$TMUX_HOSTS"
+echo Connecting to hosts: "$TMUX_HOSTS"
 
 TMUX_SESSION="tmux-cssh"
 
