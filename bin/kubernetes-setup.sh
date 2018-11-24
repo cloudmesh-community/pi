@@ -49,6 +49,7 @@
 # sudo apt-get install docker-ce=18.06.0~ce~3-0~raspbian
 
 echo "deb [arch=armhf] https://download.docker.com/linux/raspbian stretch stable" | sudo tee /etc/apt/sources.list.d/docker.list
+sudo apt-get update -q
 sudo apt-get install -y --allow-unauthenticated docker-ce=18.06.1~ce~3-0~raspbian
 
 
