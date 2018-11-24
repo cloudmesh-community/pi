@@ -37,6 +37,15 @@ adding the `bin` directory to your path for convenience in using the scripts
 found there. This can be accomplished by running the following lines:
 
 ```bash
+$ cat << 'EOF' >> $HOME/.profile
+
+if [ -d "$HOME/pi/bin" ] ; then
+    PATH="$HOME/pi/bin:$PATH"
+fi
+EOF
+```
+
+```bash
 $ echo 'if [ -d "$HOME/pi/bin" ] ; then' >> ~/.profile
 $ echo '    PATH="$HOME/pi/bin:$PATH"' >> ~/.profile
 $ echo 'fi' >> ~/.profile
