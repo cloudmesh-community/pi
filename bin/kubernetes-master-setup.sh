@@ -45,6 +45,7 @@ if [ -z $APISERVER_IP ]; then
 fi
 
 # Pre-pull the images to make the init command go faster
+echo "Pulling config images. This may take a while..."
 kubeadm config images pull
 
 # Fix a warning message in kubeadm init
@@ -56,6 +57,11 @@ modprobe ip_vs_wrr
 modprobe nf_conntrack_ipv4
 
 kubeadm init --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP"
+KUBEADM_RETVAL=$?
+if [ $KUBEADM_RETVAL -ne 0 ]; then
+  echo "kubeadm init failed. Aborting."
+  exit $KUBEADM_RETVAL
+fi
 
 # kubeadm join --token <token> --discovery-token-ca-cert-hash <ca hash>
 
