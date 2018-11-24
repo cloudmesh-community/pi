@@ -6,21 +6,44 @@
 #   sudo kubernetes-setup.sh
 
 POD_CIDR="10.244.0.0/16"
-WLAN0_IP=$(ifconfig wlan0 | grep '\binet\b' | awk '{print $2}')
-ETH0_IP=$(ifconfig eth0 | grep '\binet\b' | awk '{print $2}')
 
-if [ ! -z $WLAN_IP ]; then
-  APISERVER_IP=$WLAN0_IP
-  echo "Setting --apiserver-advertise-address to wlan0 IP $APISERVER_IP"
-else
-  if [ ! -z $ETH0_IP ]; then
-    APISERVER_IP=$ETH0_IP
-    echo "Setting --apiserver-advertise-address to eth0 IP $APISERVER_IP"
+usage() { echo "Usage: $0 [-c <pod-cidr>] [-a <apiserver ip address>]" 1>&2; exit 1; }
+
+while getopts ":c:a:" o; do
+    case "${o}" in
+        c)
+            POD_CIDR=${OPTARG}
+            ;;
+        a)
+            APISERVER_IP=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z $APISERVER_IP ]; then
+  WLAN0_IP=$(ifconfig wlan0 | grep '\binet\b' | awk '{print $2}')
+  ETH0_IP=$(ifconfig eth0 | grep '\binet\b' | awk '{print $2}')
+
+  if [ ! -z $WLAN_IP ]; then
+    APISERVER_IP=$WLAN0_IP
+    echo "Setting --apiserver-advertise-address to wlan0 IP $APISERVER_IP"
+  else
+    if [ ! -z $ETH0_IP ]; then
+      APISERVER_IP=$ETH0_IP
+      echo "Setting --apiserver-advertise-address to eth0 IP $APISERVER_IP"
+    fi
   fi
 fi
+
 if [ -z $APISERVER_IP ]; then
   echo No valid IP found. Please run again with -a option to set --apiserver-advertise-address
 fi
+
+echo ip address $APISERVER_IP
 
 exit 0
 
