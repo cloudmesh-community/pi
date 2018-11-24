@@ -57,12 +57,15 @@ kubeadm config images pull
 # Fix a warning message in kubeadm init
 modprobe ip_vs
 modprobe ip_vs_sh
-modprobe ip_vs_vs
+# This is failing, maybe it was a typo?
+# modprobe ip_vs_vs
 modprobe ip_vs_rr
 modprobe ip_vs_wrr
 modprobe nf_conntrack_ipv4
 
-kubeadm init --ignore-preflight-errors=cri --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP" | tee ~/kubeadm-init.txt
+# Temporarily ignore SystemVerification errors: specifically the Docker version
+# check unnecessarily complains about 18.09.
+kubeadm init --ignore-preflight-errors=SystemVerification --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP" 2>&1 | tee kubeadm-init.txt
 KUBEADM_RETVAL=$?
 if [ $KUBEADM_RETVAL -ne 0 ]; then
   echo "kubeadm init failed. Aborting."
@@ -71,7 +74,7 @@ fi
 
 # Get the cluster join command
 # `  kubeadm join 10.0.0.101:6443 --token h913u2.uh9ocdeqpz6zr9r6 --discovery-token-ca-cert-hash sha256:017b24e2b70873c5a993dda7e03cfee60761d4038d87232a8791c4a426587e75`
-JOIN_CMD=$(tail -n 20 ~/kubeadm-init.txt | awk '/kubeadm join/')
+JOIN_CMD=$(tail -n 20 kubeadm-init.txt | awk '/kubeadm join/')
 JOIN_PARTS=($JOIN_CMD)
 JOIN_IP=${JOIN_PARTS[2]}
 JOIN_TOKEN=${JOIN_PARTS[4]}
