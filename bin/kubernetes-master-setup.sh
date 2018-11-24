@@ -65,7 +65,7 @@ modprobe nf_conntrack_ipv4
 
 # Temporarily ignore SystemVerification errors: specifically the Docker version
 # check unnecessarily complains about 18.09.
-kubeadm init --ignore-preflight-errors=SystemVerification --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP" 2>&1 | tee kubeadm-init.txt
+kubeadm init --ignore-preflight-errors=SystemVerification --token-ttl=0 --pod-network-cidr="$POD_CIDR" --apiserver-advertise-address="$APISERVER_IP" 2>&1 | tee kubeadm-init.txt
 KUBEADM_RETVAL=$?
 if [ $KUBEADM_RETVAL -ne 0 ]; then
   echo "kubeadm init failed. Aborting."
