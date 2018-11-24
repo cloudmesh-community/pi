@@ -62,7 +62,7 @@ modprobe ip_vs_rr
 modprobe ip_vs_wrr
 modprobe nf_conntrack_ipv4
 
-kubeadm init --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP" | tee ~/kubeadm-init.txt
+kubeadm init --ignore-preflight-errors=cri --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP" | tee ~/kubeadm-init.txt
 KUBEADM_RETVAL=$?
 if [ $KUBEADM_RETVAL -ne 0 ]; then
   echo "kubeadm init failed. Aborting."

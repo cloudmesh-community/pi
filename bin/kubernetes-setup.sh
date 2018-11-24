@@ -15,15 +15,16 @@ fi
 # Install Docker
 # This is currently installing a version of docker that is not supported by
 # kubernetes on the Pi
-#curl -sSL get.docker.com \
-  #| sh \
-  #&& usermod pi -aG docker
+curl -sSL get.docker.com \
+  | sh \
+  && usermod pi -aG docker
 
 # Add docker repository
 # add the repository to apt sources
-echo "deb https://download.docker.com/linux/raspbian stretch stable" | tee /etc/apt/sources.list.d/docker.list
+# TEMP use original docker install
+# echo "deb https://download.docker.com/linux/raspbian stretch stable" | tee /etc/apt/sources.list.d/docker.list
 # add the gpg key
-curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+# curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 
 # Add kubernetes repository
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
@@ -37,7 +38,9 @@ apt-get update
 # Install docker and kubeadm
 # apt-get install -qy docker-ce=18.06.1~ce~3-0~raspbian kubeadm
 
-sudo apt-get install -qy docker-ce=18.03.1~ce-0~raspbian kubeadm
+# TEMP use original docker install
+#sudo apt-get install -qy docker-ce=18.03.1~ce-0~raspbian 
+sudo apt-get install -qy kubeadm
 
 
 # Disable Swap
