@@ -35,7 +35,10 @@ apt-get update -q
 apt-get update
 
 # Install docker and kubeadm
-apt-get install -qy docker-ce=18.06.1~ce~3-0~raspbian kubeadm
+# apt-get install -qy docker-ce=18.06.1~ce~3-0~raspbian kubeadm
+
+sudo apt-get install -qy docker-ce=18.03.1~ce-0~raspbian kubeadm
+
 
 # Disable Swap
 dphys-swapfile swapoff && \
