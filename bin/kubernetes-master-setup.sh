@@ -63,11 +63,23 @@ if [ $KUBEADM_RETVAL -ne 0 ]; then
   exit $KUBEADM_RETVAL
 fi
 
-# Read the join command and tokens from ~/kubeadm-init.txt
-# They are almost the last lines in the stream
-# kubeadm join 10.0.0.101:6443 --token h913u2.uh9ocdeqpz6zr9r6 --discovery-token-ca-cert-hash sha256:017b24e2b70873c5a993dda7e03cfee60761d4038d87232a8791c4a426587e75
+# Get the cluster join command
+# `  kubeadm join 10.0.0.101:6443 --token h913u2.uh9ocdeqpz6zr9r6 --discovery-token-ca-cert-hash sha256:017b24e2b70873c5a993dda7e03cfee60761d4038d87232a8791c4a426587e75`
+JOIN_CMD=$(tail -n 20 ~/kubeadm-init.txt | awk '/kubeadm join/')
+JOIN_PARTS=($JOIN_CMD)
+JOIN_IP=${JOIN_PARTS[2]}
+JOIN_TOKEN=${JOIN_PARTS[4]}
+JOIN_CA_HASH=${JOIN_PARTS[6]}
 
-# kubeadm join --token <token> --discovery-token-ca-cert-hash <ca hash>
+# Save these settings to a yaml file
+cat << EOF > kubeadm-settings.yml
+---
+kubeadm:
+  join-cmd: \""$JOIN_CMD"\"
+  ip: "$JOIN_IP"
+  token: "$JOIN_TOKEN"
+  ca-hash: "$JOIN_CA_HASH"
+EOF
 
 mkdir -p "$HOME/.kube"
 cp -i /etc/kubernetes/admin.conf "$HOME/.kube/config"
