@@ -5,6 +5,12 @@
 # Examples:
 #   sudo kubernetes-setup.sh
 
+if [[ $EUID -ne 0 ]]; then
+  echo "You must be root to run this script. Run with:" 1>&2
+  printf >&2 "sudo %s %s %s\\n" "$(realpath --relative-to="$(pwd)" "$0")"
+  exit 1
+fi
+
 POD_CIDR="10.244.0.0/16"
 
 usage() { echo "Usage: $0 [-c <pod-cidr>] [-a <apiserver ip address>]" 1>&2; exit 1; }

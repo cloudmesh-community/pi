@@ -5,6 +5,13 @@
 # Examples:
 #   sudo kubernetes-setup.sh
 
+# Check for root user
+if [[ $EUID -ne 0 ]]; then
+  echo "You must be root to run this script. Run with:" 1>&2
+  printf >&2 "sudo %s %s %s\\n" "$(realpath --relative-to="$(pwd)" "$0")"
+  exit 1
+fi
+
 # Install Docker
 # This is currently installing a version of docker that is not supported by
 # kubernetes on the Pi
