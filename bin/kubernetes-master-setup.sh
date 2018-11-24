@@ -56,12 +56,16 @@ modprobe ip_vs_rr
 modprobe ip_vs_wrr
 modprobe nf_conntrack_ipv4
 
-kubeadm init --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP"
+kubeadm init --token-ttl=0 "--pod-network-cidr=$POD_CIDR" "--apiserver-advertise-address=$APISERVER_IP" | tee ~/kubeadm-init.txt
 KUBEADM_RETVAL=$?
 if [ $KUBEADM_RETVAL -ne 0 ]; then
   echo "kubeadm init failed. Aborting."
   exit $KUBEADM_RETVAL
 fi
+
+# Read the join command and tokens from ~/kubeadm-init.txt
+# They are almost the last lines in the stream
+# kubeadm join 10.0.0.101:6443 --token h913u2.uh9ocdeqpz6zr9r6 --discovery-token-ca-cert-hash sha256:017b24e2b70873c5a993dda7e03cfee60761d4038d87232a8791c4a426587e75
 
 # kubeadm join --token <token> --discovery-token-ca-cert-hash <ca hash>
 
@@ -71,3 +75,5 @@ chown "$(id -u)":"$(id -g)" "$HOME/.kube/config"
 
 
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+# kubectl get pods --namespace=kube-system
