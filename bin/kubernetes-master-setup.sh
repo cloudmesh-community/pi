@@ -75,6 +75,8 @@ fi
 # Get the cluster join command
 # `  kubeadm join 10.0.0.101:6443 --token h913u2.uh9ocdeqpz6zr9r6 --discovery-token-ca-cert-hash sha256:017b24e2b70873c5a993dda7e03cfee60761d4038d87232a8791c4a426587e75`
 JOIN_CMD=$(tail -n 20 kubeadm-init.txt | awk '/kubeadm join/')
+# Trim whitespace
+JOIN_CMD=$(echo $JOIN_CMD)
 JOIN_PARTS=($JOIN_CMD)
 JOIN_IP=${JOIN_PARTS[2]}
 JOIN_TOKEN=${JOIN_PARTS[4]}
