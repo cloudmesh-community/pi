@@ -21,8 +21,7 @@ install git. Please run the following commands (NOTE: your Pi will need to be
 connected to the internet for these commands to work properly):
 
 ```bash
-$ sudo apt-get update
-$ sudo apt-get install -y git
+$ sudo apt-get update; sudo apt-get install -y git
 ```
 
 When this is complete you can then checkout (get a copy of) the latest version
