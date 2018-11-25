@@ -83,6 +83,8 @@ kubeadm:
   ca-hash: $JOIN_CA_HASH
 EOF
 
+rm kubeadm-init.txt
+
 mkdir -p "$HOME/.kube"
 cp /etc/kubernetes/admin.conf "$HOME/.kube/config"
 chown "$(id -u)":"$(id -g)" "$HOME/.kube/config"
