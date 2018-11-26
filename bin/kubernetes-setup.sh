@@ -20,10 +20,12 @@ curl -sSL get.docker.com \
   && usermod pi -aG docker
 
 # NEXT DOWNGRADE to the latest supported docker version
-# not sure if this will be necessary
-# sudo systemctl stop docker.service
+# first, stop the docker service that is running
+systemctl stop docker.service
+# then downgrade the package
 apt-get install -qy --allow-downgrades docker-ce=18.06.1~ce~3-0~raspbian
-# sudo systemctl start docker.service
+# and restart the docker service
+systemctl start docker.service
 
 # Add docker repository
 # add the repository to apt sources
