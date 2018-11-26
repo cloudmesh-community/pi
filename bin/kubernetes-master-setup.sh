@@ -7,7 +7,7 @@
 
 if [[ $EUID -ne 0 ]]; then
   echo "You must be root to run this script. Run with:" 1>&2
-  printf >&2 "sudo %s %s %s\\n" "$(realpath --relative-to="$(pwd)" "$0")"
+  printf >&2 "sudo %s\\n" "$(realpath --relative-to="$(pwd)" "$0")"
   exit 1
 fi
 
@@ -30,22 +30,22 @@ while getopts ":c:a:" o; do
 done
 shift $((OPTIND-1))
 
-if [ -z $APISERVER_IP ]; then
+if [ -z "$APISERVER_IP" ]; then
   WLAN0_IP=$(ifconfig wlan0 | grep '\binet\b' | awk '{print $2}')
   ETH0_IP=$(ifconfig eth0 | grep '\binet\b' | awk '{print $2}')
 
-  if [ ! -z $WLAN_IP ]; then
+  if [ ! -z "$WLAN0_IP" ]; then
     APISERVER_IP=$WLAN0_IP
     echo "Setting --apiserver-advertise-address to wlan0 IP $APISERVER_IP"
   else
-    if [ ! -z $ETH0_IP ]; then
+    if [ ! -z "$ETH0_IP" ]; then
       APISERVER_IP=$ETH0_IP
       echo "Setting --apiserver-advertise-address to eth0 IP $APISERVER_IP"
     fi
   fi
 fi
 
-if [ -z $APISERVER_IP ]; then
+if [ -z "$APISERVER_IP" ]; then
   echo No valid IP found. Please run again with -a option to set --apiserver-advertise-address
   exit 1
 fi
@@ -56,10 +56,6 @@ kubeadm config images pull
 
 init_output_file=$(mktemp /tmp/kubernetes-master-setup.XXXXX)
 
-# Temporarily ignore SystemVerification errors: specifically the Docker version
-# check unnecessarily complains about 18.09.
-# kubeadm init --ignore-preflight-errors=SystemVerification --token-ttl=0 --pod-network-cidr="$POD_CIDR" --apiserver-advertise-address="$APISERVER_IP" 2>&1 | tee kubeadm-init.txt
-# I think it's fixed
 kubeadm init --token-ttl=0 --pod-network-cidr="$POD_CIDR" --apiserver-advertise-address="$APISERVER_IP" 2>&1 | tee "$init_output_file"
 KUBEADM_RETVAL=$?
 if [ $KUBEADM_RETVAL -ne 0 ]; then
