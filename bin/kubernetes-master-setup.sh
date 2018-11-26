@@ -54,11 +54,13 @@ fi
 echo "Pulling config images. This may take a while..."
 kubeadm config images pull
 
+init_output_file=$(mktemp /tmp/kubernetes-master-setup.XXXXX)
+
 # Temporarily ignore SystemVerification errors: specifically the Docker version
 # check unnecessarily complains about 18.09.
 # kubeadm init --ignore-preflight-errors=SystemVerification --token-ttl=0 --pod-network-cidr="$POD_CIDR" --apiserver-advertise-address="$APISERVER_IP" 2>&1 | tee kubeadm-init.txt
 # I think it's fixed
-kubeadm init --token-ttl=0 --pod-network-cidr="$POD_CIDR" --apiserver-advertise-address="$APISERVER_IP" 2>&1 | tee kubeadm-init.txt
+kubeadm init --token-ttl=0 --pod-network-cidr="$POD_CIDR" --apiserver-advertise-address="$APISERVER_IP" 2>&1 | tee "$init_output_file"
 KUBEADM_RETVAL=$?
 if [ $KUBEADM_RETVAL -ne 0 ]; then
   echo "kubeadm init failed. Aborting."
@@ -67,7 +69,7 @@ fi
 
 # Get the cluster join command
 # `  kubeadm join 10.0.0.101:6443 --token h913u2.uh9ocdeqpz6zr9r6 --discovery-token-ca-cert-hash sha256:017b24e2b70873c5a993dda7e03cfee60761d4038d87232a8791c4a426587e75`
-JOIN_CMD=$(tail -n 20 kubeadm-init.txt | awk '/kubeadm join/')
+JOIN_CMD=$(tail -n 20 "$init_output_file" | awk '/kubeadm join/')
 # Trim whitespace
 JOIN_CMD=$(echo $JOIN_CMD)
 JOIN_PARTS=($JOIN_CMD)
@@ -85,7 +87,7 @@ kubeadm:
   ca-hash: $JOIN_CA_HASH
 EOF
 
-rm kubeadm-init.txt
+rm "$init_output_file"
 
 mkdir -p "$HOME/.kube"
 cp /etc/kubernetes/admin.conf "$HOME/.kube/config"
