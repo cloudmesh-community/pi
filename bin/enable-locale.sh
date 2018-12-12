@@ -30,5 +30,5 @@ fi
 # perl -pi -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 perl -pi -e "s/#\\s*$NEW_LOCALE\\s*$NEW_ENCODING/$NEW_LOCALE $NEW_ENCODING/g" /etc/locale.gen
 locale-gen "$NEW_LOCALE"
-update-locale "$NEW_LOCALE"
+update-locale LANG="$NEW_LOCALE"
 
